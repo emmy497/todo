@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addTodo, toggleTodo, deleteTodo } from "./features/todoSlice";
+import { motion, AnimatePresence } from "framer-motion";
+
+
 
 function App() {
   const [task, setTask] = useState("");
@@ -37,36 +40,42 @@ function App() {
         </div>
 
         {/* Task List */}
-        <ul className="space-y-2">
-          {todos.map((todo) => (
-            <li
-              key={todo.id}
-              className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-lg"
-            >
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={() => dispatch(toggleTodo(todo.id))}
-                  className="cursor-pointer"
-                />
-                <span
-                  className={`${
-                    todo.completed ? "line-through text-gray-500" : "text-black"
-                  }`}
-                >
-                  {todo.text}
-                </span>
-              </div>
-              <button
-                onClick={() => dispatch(deleteTodo(todo.id))}
-                className="text-red-500 hover:text-red-700"
-              >
-                ✕
-              </button>
-            </li>
-          ))}
-        </ul>
+      <AnimatePresence>
+  <ul className="space-y-2">
+    {todos.map((todo) => (
+      <motion.li
+        key={todo.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-lg"
+      >
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={todo.completed}
+            onChange={() => dispatch(toggleTodo(todo.id))}
+            className="cursor-pointer"
+          />
+          <span
+            className={`${
+              todo.completed ? "line-through text-gray-500" : "text-black"
+            }`}
+          >
+            {todo.text}
+          </span>
+        </div>
+        <button
+          onClick={() => dispatch(deleteTodo(todo.id))}
+          className="text-red-500 hover:text-red-700"
+        >
+          ✕
+        </button>
+      </motion.li>
+    ))}
+  </ul>
+</AnimatePresence>
 
         {todos.length === 0 && (
           <p className="text-gray-500 text-center mt-4">No tasks yet. Add one!</p>
